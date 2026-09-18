@@ -110,7 +110,7 @@ def calculate_study_time():
         return "No records found. Kindly save a session first."
 def display_progress():
     total_time = 0
-    subject = (input("Enter the subject name: ")).capitalize()
+    subject = (input("Enter the subject name: ")).strip()
     filepath = "data.json"
     if os.path.exists(filepath):
         with open(filepath, "r") as file:
