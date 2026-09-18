@@ -24,14 +24,17 @@ import datetime
 import os
 import json
 def add_session():
-    subject = (input("Enter the subject name: ")).capitalize()
+    subject = (input("Enter the subject name: ")).strip()
     while True:
         try:
             duration = int(input("Enter the study duration (in minutes): "))
+            if duration <= 0:
+                print("The duration must be greater than 0.")
+                continue
             break
         except ValueError:
             print("Please enter a valid number.")
-    notes = (input("Any notes?: ")).title()
+    notes = (input("Any notes?: ")).strip()
     time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     session = {
         "subject": subject,
@@ -62,29 +65,29 @@ def display_sessions():
         if choice == "3":
             with open(filepath, "r") as file:
                 content = json.load(file)
-            for index, i in enumerate(content, start=1):
+            for index, session in enumerate(content, start=1):
                 print(f"{index}.")
-                for key, value in i.items():
+                for key, value in session.items():
                     print(f"{key}: {value}")
                 print()
             return None
         elif choice == "1":
             with open(filepath, "r") as file:
                 content = json.load(file)
-            for index, i in enumerate(content, start=1):
-                if i["time"][:10] == (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[:10]:
+            for index, session in enumerate(content, start=1):
+                if session["time"][:10] == (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[:10]:
                     print(f"{index}.")
-                    for key, value in i.items():
+                    for key, value in session.items():
                         print(f"{key}: {value}")
                     print()
             return None
         elif choice == "2":
             with open(filepath, "r") as file:
                 content = json.load(file)
-            for index, i in enumerate(content, start=1):
-                if i["time"][:7] == (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[:7]:
+            for index, session in enumerate(content, start=1):
+                if session["time"][:7] == (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[:7]:
                     print(f"{index}.")
-                    for key, value in i.items():
+                    for key, value in session.items():
                         print(f"{key}: {value}")
                     print()
             return None
@@ -102,7 +105,7 @@ def calculate_study_time():
         for i in content:
             if i["time"][:10] == (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))[:10]:
                 time_daily += i["duration"]
-        return f"You studied for {time_daily} minutes today!."
+        return f"You studied for {time_daily} minutes today!"
     else:
         return "No records found. Kindly save a session first."
 def display_progress():
@@ -140,8 +143,10 @@ def main():
         if choice == 1:
             result = add_session()
             save_session(result)
+            print()
         elif choice == 2:
             display_sessions()
+            print()
         elif choice == 3:
             print(calculate_study_time())
             print()
@@ -152,5 +157,6 @@ def main():
             is_running = False
         else:
             print("Please enter a valid number.")
+            print()
 if __name__ == "__main__":
     main()
